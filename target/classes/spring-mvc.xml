@@ -13,21 +13,21 @@
  http://www.springframework.org/schema/aop/spring-aop.xsd
  http://www.springframework.org/schema/mvc
  http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+ 
  <!-- js, css, html : 웹에서 기본 제공되는 파일은 spring에서 제외시킴. -->
  <mvc:default-servlet-handler />
+ 
  <!-- @Component, @Controller, @Service, @Repository => 객체화  -->
  <context:component-scan base-package="controller,logic,dao"></context:component-scan>
+ 
  <mvc:annotation-driven /> <!-- mvc 관련 어노테이션 적용 -->
+ 
  <!-- viewResolver : view 결정자 => jsp 페이지의 위치 지정 -->
  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
  	<property name="viewClass">
  		<value>org.springframework.web.servlet.view.JstlView</value>
  	</property>
- 	<property name="prefix"> <!-- 접두사 -->
- 		<value>/WEB-INF/view/</value>
- 	</property>
- 	<property name="suffix"> <!-- 접미사 -->
- 		<value>.jsp</value>
- 	</property>
+ 	<property name="prefix" value="/WEB-INF/view/" /> <!-- 접두사 -->
+ 	<property name="suffix" value=".jsp" />  <!-- 접미사 -->
  </bean>
 </beans>

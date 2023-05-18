@@ -11,12 +11,12 @@
 <title>상품등록</title>
 </head>
 <body>
-	<form:form modelAttribute="item" action="register" enctype="multipart/form-data">
+	<form:form modelAttribute="item" action="register" enctype="multipart/form-data"> <!-- modelAttribute : bean 객체 이름이 "id 속성"으로 설정. 생략 시 command 문자열 생성 -->
 		<h2>상품등록</h2>
 		<table>
 			<tr>
 				<td>상품명</td>
-				<td><form:input path="name" /></td>
+				<td><form:input path="name" /></td> <!-- path : 설정한 property는 id와 name 속성으로 설정되며 model의 값을 getter를 통해 가져와 value 속성에 주입 -->
 				<td><font color="red"><form:errors path="name" /></font></td>
 			</tr>			
 			<tr>

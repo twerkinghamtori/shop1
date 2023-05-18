@@ -33,7 +33,7 @@ public class ItemDao {
 	public Item getItem(Integer id) {
 		param.clear();
 		param.put("id", id);
-		return template.queryForObject("select * from item where id=:id", param, mapper);
+		Item item = template.queryForObject("select * from item where id=:id", param, mapper);
+		return item;
 	}
-
 }

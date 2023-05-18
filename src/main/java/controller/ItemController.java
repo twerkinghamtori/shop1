@@ -23,8 +23,8 @@ public class ItemController {
 	//http://localhost:8080/shop1/item/list
 	@RequestMapping("list")
 	public ModelAndView list() {
-		//ModelAndView : Model과 View를 연결시켜놓은 객체. view에 전송할 데이터 + view 설정
-		//view 설정이 안된 경우 : url(item/list)과 동일
+		//ModelAndView : Model과 View를 연결시켜놓은 객체. view에 전송할 데이터 + view 이름 설정
+		//view 설정이 안된 경우(ModelAndView()) : url(item/list)과 동일
 		ModelAndView mav = new ModelAndView();
 		List<Item> itemList = service.itemList();
 		mav.addObject("itemList",itemList); //데이터 저장(setAttribute?). view:item/list 인 mav.
@@ -50,7 +50,7 @@ public class ItemController {
 	public ModelAndView register(@Valid Item item, BindingResult bresult) {
 		//item의 프로퍼티와 파라미터 값을 비교하여 같은 이름의 값을 item 객체에 저장
 		//@Valid : item 객체ㅔ 입력된 내용 유효성 검사 => 결과를 BindingResult객체로 전달
-		ModelAndView mav = new ModelAndView("item/create"); //view 이름 설정
+		ModelAndView mav = new ModelAndView("item/create"); //view 이름 직접설정
 		if(bresult.hasErrors()) { //Return if there were "any" errors (at least one error exists)
 			mav.getModel().putAll(bresult.getModel());
 			return mav;
