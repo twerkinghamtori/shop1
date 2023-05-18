@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context.xsd
+ http://www.springframework.org/schema/aop
+ http://www.springframework.org/schema/aop/spring-aop.xsd
+ http://www.springframework.org/schema/mvc
+ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+ <!-- js, css, html : 웹에서 기본 제공되는 파일은 spring에서 제외시킴. -->
+ <mvc:default-servlet-handler />
+ <!-- @Component, @Controller, @Service, @Repository => 객체화  -->
+ <context:component-scan base-package="controller,logic,dao"></context:component-scan>
+ <mvc:annotation-driven /> <!-- mvc 관련 어노테이션 적용 -->
+ <!-- viewResolver : view 결정자 => jsp 페이지의 위치 지정 -->
+ <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ 	<property name="viewClass">
+ 		<value>org.springframework.web.servlet.view.JstlView</value>
+ 	</property>
+ 	<property name="prefix"> <!-- 접두사 -->
+ 		<value>/WEB-INF/view/</value>
+ 	</property>
+ 	<property name="suffix"> <!-- 접미사 -->
+ 		<value>.jsp</value>
+ 	</property>
+ </bean>
+</beans>
