@@ -11,13 +11,17 @@
 <title>상품등록</title>
 </head>
 <body>
-	<form:form modelAttribute="item" action="register" enctype="multipart/form-data"> <!-- modelAttribute : bean 객체 이름이 "id 속성"으로 설정. 생략 시 command 문자열 생성 -->
+	<%-- get 방식 요청 => 화면 출력
+		post 방식 요청 => 파일업로드 + db에 데이터 저장 --%>
+	<!-- form:form => enctype="multipart/form-data"인 경우 method="post"(필수)로 자동으로 설정해줌. 생략가능. -->
+	<form:form modelAttribute="item" action="create" enctype="multipart/form-data" method="post"> <!-- modelAttribute : bean 객체 이름이 "id 속성"으로 설정. 생략 시 command 문자열 생성 -->
 		<h2>상품등록</h2>
 		<table>
 			<tr>
 				<td>상품명</td>
 				<td><form:input path="name" /></td> <!-- path : 설정한 property는 id와 name 속성으로 설정되며 model의 값을 getter를 통해 가져와 value 속성에 주입 -->
-				<td><font color="red"><form:errors path="name" /></font></td>
+				<%-- <input type="text" name="name" id="name" value="${item(modelAttribute에 들어와잇는 item 객체).name}"> --%>
+				<td><font color="red"><form:errors path="name" /></font></td> <!-- name에 해당하는 message -->
 			</tr>			
 			<tr>
 				<td>상품가격</td>

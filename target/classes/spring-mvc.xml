@@ -20,7 +20,7 @@
  <!-- @Component, @Controller, @Service, @Repository => 객체화  -->
  <context:component-scan base-package="controller,logic,dao"></context:component-scan>
  
- <mvc:annotation-driven /> <!-- mvc 관련 어노테이션 적용 -->
+ <mvc:annotation-driven /> <!-- mvc 관련 어노테이션 적용 ex.@Controller,.. -->
  
  <!-- viewResolver : view 결정자 => jsp 페이지의 위치 지정 -->
  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -30,4 +30,5 @@
  	<property name="prefix" value="/WEB-INF/view/" /> <!-- 접두사 -->
  	<property name="suffix" value=".jsp" />  <!-- 접미사 -->
  </bean>
+ <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:maxUploadSize="104854600" p:maxInMemorySize="10485460" />
 </beans>
