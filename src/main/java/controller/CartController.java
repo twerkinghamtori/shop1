@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import exception.CartEmptyException;
+import exception.LoginException;
 import logic.Cart;
 import logic.Item;
 import logic.ItemSet;
 import logic.ShopService;
+import logic.User;
 
 @Controller
 @RequestMapping("cart")
@@ -59,5 +62,18 @@ public class CartController {
 		}
 		mav.addObject("cart", cart);
 		return mav;
+	}
+	
+	@RequestMapping("checkout")
+	public String checkout(HttpSession session) {
+		Cart cart = (Cart)session.getAttribute("CART");
+		if(cart == null || cart.getItemSetList().size() == 0) {
+			throw new CartEmptyException("장바구니에 상품이 없습니다.", "../item/list");
+		}
+		User loginUser = (User)session.getAttribute("loginUser");
+		if(loginUser == null) {
+			throw new LoginException("로그인이 필요한 서비스입니다.", "../user/login");
+		}
+		return null;
 	}
 }

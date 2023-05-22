@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import logic.Item;
+import logic.User;
 
 @Repository //@Component + dao(model)기능
 public class ItemDao {

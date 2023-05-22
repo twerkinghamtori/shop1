@@ -30,5 +30,25 @@
  	<property name="prefix" value="/WEB-INF/view/" /> <!-- 접두사 -->
  	<property name="suffix" value=".jsp" />  <!-- 접미사 -->
  </bean>
+ <!-- 파일 업로드 설정 -->
  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:maxUploadSize="104854600" p:maxInMemorySize="10485460" />
+ <!-- 예외처리 설정 -->
+ <bean id="exceptionHandler" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+ 	<!-- exception.CartEmptyException 예외 발생 => exception.jsp 로 제어 이동 -->
+<!--   	<property name="exceptionMappings" value="exception.CartEmptyException=exception exception.LoginException=exception" />  -->
+ 	<property name="exceptionMappings">
+		<value>
+			exception.CartEmptyException=exception
+			exception.LoginException=exception
+		</value>
+	</property> 
+ </bean>
+ <!-- message 처리 설정 : messages.properties(기본 파일). messages_ko_KR.properties(default?)=> 이게 기본. 이거 없으면 messages.properties찾음.-->
+ <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+ 	<property name="basenames">
+ 		<list>
+ 			<value>messages</value>
+ 		</list>
+ 	</property>
+ </bean>
 </beans>
