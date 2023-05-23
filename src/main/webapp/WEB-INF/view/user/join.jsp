@@ -20,7 +20,7 @@
 				</c:forEach>
 			</font>
 		</spring:hasBindErrors>
-		<table>
+		<table class="w3-table w3-striped">
 			<tr>
 				<td>아이디</td>
 				<td>

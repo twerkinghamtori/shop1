@@ -62,4 +62,10 @@ public class ItemDao {
 		String sql = "delete from item where id=:id";
 		template.update(sql, param);
 	}
+
+	public Item selectItem(int itemid) {
+		param.clear();
+		param.put("id", itemid);
+		return template.queryForObject("select * from item where id=:id", param, mapper);
+	}
 }

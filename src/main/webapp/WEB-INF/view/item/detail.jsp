@@ -9,7 +9,7 @@
 </head>
 <body>
 	<h2>상품 상세보기</h2>
-	<table>
+	<table class="w3-table w3-striped">
 		<tr>
 			<td><img src="../img/${item.pictureUrl }"></td>
 			<td>

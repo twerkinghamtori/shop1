@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import dao.ItemDao;
 import dao.UserDao;
+import dao.SaleDao;
+import dao.SaleItemDao;
 
 @Service //@Component + Service(controller기능과 dao 기능의 중간 역할 기능)
 public class ShopService {
@@ -19,6 +22,12 @@ public class ShopService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private SaleDao saleDao;
+	
+	@Autowired
+	private SaleItemDao saleItemDao;
 	
 	public List<Item> itemList() {
 		return itemDao.list();
@@ -75,5 +84,35 @@ public class ShopService {
 
 	public User selectUserOne(String userid) {
 		return userDao.selectUserOne(userid);
+	}
+
+	// 1. sale테이블과 saleitem테이블에 등록
+	// 2. 결과를 sale 객체에 저장
+	public Sale checkend(User loginUser, Cart cart) {
+		int maxSaleId = saleDao.getMaxSaleId();
+		Sale sale = new Sale();
+		sale.setSaleid(maxSaleId+1);
+		sale.setUser(loginUser);
+		sale.setUserid(loginUser.getUserid());
+		saleDao.insert(sale);
+		int seq = 0;
+		for(ItemSet is : cart.getItemSetList()) {
+			SaleItem saleItem = new SaleItem(sale.getSaleid(), ++seq, is);
+			sale.getItemList().add(saleItem);
+			saleItemDao.insert(saleItem);
+		}
+		return sale; //주문정보, 주문상품정보, 상품정보, 사용자정보
+	}
+
+	public List<Sale> selectSaleList(String userid) {
+		List<Sale> saleList = saleDao.selectSaleList(userid);
+		for(Sale s : saleList) {
+			List<SaleItem> saleItemList = saleItemDao.selectSaleItemList(s.getSaleid());			
+			for(SaleItem si : saleItemList) {
+				si.setItem(itemDao.selectItem(si.getItemid()));
+			}
+			s.setItemList(saleItemList);
+		}				
+		return saleList;
 	}
 }

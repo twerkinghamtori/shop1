@@ -31,7 +31,7 @@
 			</font>
 		</spring:hasBindErrors>
 		
-		<table>
+		<table style="margin-left:auto;margin-right:auto;" class="w3-table w3-striped">
 			<tr>
 				<td>아이디</td>
 				<td>
@@ -44,7 +44,7 @@
 			<tr>
 				<td>비밀번호</td>
 				<td>
-					<form:input path="password"/>
+					<form:password path="password"/>
 					<font color="red">
 						<form:errors path="password" />
 					</font>

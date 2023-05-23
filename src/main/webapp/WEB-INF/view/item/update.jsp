@@ -14,7 +14,7 @@
 		<form:hidden path="id"/>
 		<form:hidden path="pictureUrl" />
 		<h2>상품 정보 수정</h2>
-		<table>
+		<table class="w3-table w3-striped">
 			<tr>
 				<td>상품명</td>
 				<td><form:input path="name" /></td>

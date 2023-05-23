@@ -18,8 +18,8 @@
  <mvc:default-servlet-handler />
  
  <!-- @Component, @Controller, @Service, @Repository => 객체화  -->
- <context:component-scan base-package="controller,logic,dao"></context:component-scan>
- 
+ <context:component-scan base-package="controller,logic,dao,aop"></context:component-scan>
+ <aop:aspectj-autoproxy /> <!-- aop관련 어노테이션 적용 -->
  <mvc:annotation-driven /> <!-- mvc 관련 어노테이션 적용 ex.@Controller,.. -->
  
  <!-- viewResolver : view 결정자 => jsp 페이지의 위치 지정 -->
@@ -35,7 +35,6 @@
  <!-- 예외처리 설정 -->
  <bean id="exceptionHandler" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
  	<!-- exception.CartEmptyException 예외 발생 => exception.jsp 로 제어 이동 -->
-<!--   	<property name="exceptionMappings" value="exception.CartEmptyException=exception exception.LoginException=exception" />  -->
  	<property name="exceptionMappings">
 		<value>
 			exception.CartEmptyException=exception

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
 </head>
 <body>
 	<h2>배송지 정보</h2>
-	<table>
+	<table class="w3-table w3-striped">
 		<tr>
 			<td width="30%">주문아이디</td>
 			<td width="70%">${sessionScope.loginUser.userid }</td>
@@ -32,7 +33,7 @@
 		</tr>
 	</table>
 	<h2>구매 상품</h2>
-	<table>
+	<table class="w3-table w3-striped">
 		<tr>
 			<th>상품명</th>
 			<th>가격</th>
@@ -42,9 +43,9 @@
 		<c:forEach items="${sessionScope.CART.itemSetList }" var="itemSet" varStatus="st">
 			<tr>
 				<td>${itemSet.item.name }</td>
-				<td>${itemSet.item.price }</td>
+				<td><fmt:formatNumber value="${itemSet.item.price }" pattern="###,###" /></td>
 				<td>${itemSet.quantity }</td>
-				<td>${itemSet.item.price * itemSet.quantity }</td>
+				<td><fmt:formatNumber value="${itemSet.item.price * itemSet.quantity }" pattern="###,###" /></td>
 			</tr>
 		</c:forEach>
 		<tr>
@@ -52,7 +53,7 @@
 		</tr>
 		<tr>
 			<td colspan="4">
-				<a href="endshop">주문확정</a>&nbsp;
+				<a href="end">주문확정</a>&nbsp;
 				<a href="../item/list">상품목록</a>&nbsp;
 			</td>			
 		</tr>

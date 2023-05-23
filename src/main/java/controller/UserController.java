@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import logic.Sale;
 import logic.ShopService;
 import logic.User;
 
@@ -70,15 +73,33 @@ public class UserController {
 			e.printStackTrace();
 			br.reject("error.login.id");
 			mav.getModel().putAll(br.getModel());
+			return mav;
 		}
 		//비밀번호 검증
 		if(user.getPassword().equals(dbUser.getPassword())) {
 			session.setAttribute("loginUser", dbUser);
-			mav.setViewName("redirect:myPage");
+			mav.addObject("userid",dbUser.getUserid());
+			mav.setViewName("redirect:mypage");
 		} else {
 			br.reject("error.login.password");
 			mav.getModel().putAll(br.getModel());
 		}		
+		return mav;
+	}
+	
+	@RequestMapping("logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("loginUser");
+		return "redirect:login";
+	}
+	
+	@RequestMapping("mypage")
+	public ModelAndView mypage(String userid) {
+		ModelAndView mav = new ModelAndView();
+		List<Sale> saleList = service.selectSaleList(userid);
+		User user = service.selectUserOne(userid);
+		mav.addObject("saleList", saleList);
+		mav.addObject("user",user);
 		return mav;
 	}
 }

@@ -16,7 +16,7 @@
 	<!-- form:form => enctype="multipart/form-data"인 경우 method="post"(필수)로 자동으로 설정해줌. 생략가능. -->
 	<form:form modelAttribute="item" action="create" enctype="multipart/form-data" method="post"> <!-- modelAttribute : bean 객체 이름이 "id 속성"으로 설정. 생략 시 command 문자열 생성 -->
 		<h2>상품등록</h2>
-		<table>
+		<table class="w3-table w3-striped">
 			<tr>
 				<td>상품명</td>
 				<td><form:input path="name" /></td> <!-- path : 설정한 property는 id와 name 속성으로 설정되며 model의 값을 getter를 통해 가져와 value 속성에 주입 -->
