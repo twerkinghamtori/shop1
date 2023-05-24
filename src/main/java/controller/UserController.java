@@ -166,4 +166,24 @@ public class UserController {
 			return "redirect:login";
 		}
 	}
+	
+	/*
+	 UserLoginAspect.loginCheck() : UserController.loginCheck*(..)인 메서드. 마지막 매개변수 session인 메서드
+	 */	
+	@PostMapping("password")
+	public String loginCheckPassword(String password, String chgpass, HttpSession session) {
+		User sessionUser = (User)session.getAttribute("loginUser");
+		if(!password.equals(sessionUser.getPassword())) {
+			throw new LoginException("기존 비밀번호가 틀립니다.", "password");
+		} else {
+			try {
+				User user = service.changePass(chgpass, sessionUser.getUserid());
+				session.setAttribute("loginUser", user);
+				//sessionUser.setPassword(chgpass);
+				return "redirect:mypage?userid="+user.getUserid();
+			} catch(Exception e) {
+				throw new LoginException("비밀번호 수정 오류 발생", "password");
+			}
+		}
+	}
 }

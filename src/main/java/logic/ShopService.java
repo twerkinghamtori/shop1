@@ -124,4 +124,10 @@ public class ShopService {
 	public void userDelete(String userid) {
 		userDao.userDelete(userid);
 	}
+
+	public User changePass(String chgpass, String userid) {
+		userDao.changePass(chgpass, userid);
+		User user = userDao.selectUserOne(userid);
+		return user;
+	}
 }

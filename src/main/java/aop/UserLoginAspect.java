@@ -24,4 +24,12 @@ public class UserLoginAspect {
 		}
 		//return ..joinPoint..;
 	}
+	
+	@Before("execution(* controller.User*.loginCheck*(..)) && args(.., session)")
+	public void loginCheck(HttpSession session) throws Throwable {
+		User sessionUser = (User)session.getAttribute("loginUser");
+		if(sessionUser == null) {
+			throw new LoginException("로그인이 필요한 서비스입니다.", "login"); 
+		} 
+	}
 }
