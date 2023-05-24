@@ -8,13 +8,13 @@
 <title>회원탈퇴</title>
 </head>
 <body>
-	<spring:hasBindErrors name="user"> 
+<%--<spring:hasBindErrors name="user"> 
 			<font color="red">
 				<c:forEach items="${errors.globalErrors }" var="error">
 					<spring:message code="${error.code }" /> <br>
 				</c:forEach>
 			</font>
-	</spring:hasBindErrors>
+	</spring:hasBindErrors>  --%>
 	<table class="w3-table-all">
 		<tr>
 			<td>아이디</td>

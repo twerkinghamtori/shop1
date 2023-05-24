@@ -11,6 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,7 +93,7 @@ public class UserController {
 	
 	@RequestMapping("logout")
 	public String logout(HttpSession session) {
-		session.invalidate();
+		session.invalidate(); //장바구니 정보(CART)도 함께 삭제해야함
 		return "redirect:login";
 	}
 	
@@ -117,16 +119,16 @@ public class UserController {
 	public ModelAndView idCheckUpdatePost(@Valid User user, BindingResult br, String userid, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		User sessionUser = (User)session.getAttribute("loginUser");
-		if(br.hasErrors()) {
-			mav.getModel().putAll(br.getModel());
-			br.reject("error.input.check");
-			return mav;
-		} 
 		if(!user.getPassword().equals(sessionUser.getPassword())) {
 			mav.getModel().putAll(br.getModel());
 			br.reject("error.login.password");			
 			return mav;
 		}
+		if(br.hasErrors()) {
+			mav.getModel().putAll(br.getModel());
+			br.reject("error.input.check");
+			return mav;
+		}	
 		try {
 			service.userUpdate(user);
 			if(!sessionUser.getUserid().equals("admin")) session.setAttribute("loginUser", user);
@@ -142,7 +144,7 @@ public class UserController {
 	}
 	
 	@PostMapping("delete")
-	public String idCheckDeletePost(String password, String userid, HttpSession session) { //throw new Exception 말고..해볼까..
+	public String idCheckDeletePost(BindingResult br, String password, String userid, HttpSession session) {
 		User sessionUser = (User)session.getAttribute("loginUser");
 		if(userid.equals("admin")) {
 			throw new LoginException("관리자는 탈퇴가 불가합니다.", "mypage?userid="+userid);

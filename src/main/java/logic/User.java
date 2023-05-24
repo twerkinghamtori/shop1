@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +14,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class User {
 	@Size(min=3, max=10, message="아이디는 3자이상 10자 이하로 입력하세요.")
 	private String userid;
-	@Size(min=3, max=10, message="비밀번호는 3자이상 10자 이하로 입력하세요.")
+	@Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,10}$",
+			message="비밀번호는 최소 8 자 및 최대 10 자, 하나 이상의 대문자, 하나의 소문자, 하나의 숫자 및 하나의 특수 문자를 포함하세요.")
+//	@Size(min=3, max=10, message="비밀번호는 3자이상 10자 이하로 입력하세요.")
 	private String password;
 	@NotEmpty(message="사용자이름은 필수입니다.")
 	private String username;

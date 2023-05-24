@@ -30,7 +30,7 @@
 				<td>비밀번호</td>
 				<td>
 					<form:password path="password"/>
-					<font color="red"><form:errors path="password" /></font>
+	<%-- 			<font color="red"><form:errors path="password" /></font> --%>	
 				</td>
 			</tr>
 			<tr>
