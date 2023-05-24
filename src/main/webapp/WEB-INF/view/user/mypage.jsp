@@ -8,36 +8,39 @@
 <title>마이페이지</title>
 <script type="text/javascript">
 	$(function() {
-		$("#minfo").show()
-		$("#oinfo").hide()
+		$("#minfo").show() //memberInfo
+		$("#oinfo").hide() //orderInfo
 		$(".saleLine").each(function() {
 			$(this).hide()
 		})
 		$("#tab1").addClass("select")
 	})
 	function disp_div(id, tab) {
-		$(".info").each(function() {
+		$(".info").each(function() { //초기 설정 삭제
 			$(this).hide()
 		})
-		$(".tab").each(function() {
+		$(".tab").each(function() { //초기 설정 삭제
 			$(this).removeClass("select")
 		})
-		$("#" + id).show()
+		$("#" + id).show() //선택된 파트가 보이게 함(minfo || oinfo)
 		$("#" + tab).addClass("select")
 	}
-	function list_disp(id) {
-		$("#" + id).toggle() // toggle() : 현재 보이는 경우 => 안보이도록 변경, 안보이고 있으면=>보이도록 변경
+	function list_disp(id) { // saleList 반복문 index 해당 상품정보 보이게 함
+		$("#" + id).toggle() // toggle() : 현재 보이는 경우 => 안보이도록 변경, 안보이고 있으면=>보이도록 변경(한번 더 누르면 안보임)
 	}
 </script>
 <style type="text/css">
 	.select {
 		padding:3px;
-		background-color:#0000ff;
+		background-color:orange;
 	}
 	.select>a {
 		color:#ffffff;
 		text-decoration:none;
 		font-weight:bold;
+	}
+	.title {
+		text-decoration:none;
 	}
 </style>
 </head>
@@ -47,20 +50,20 @@
 	user : userid에 해당하는 회원정보
  --%>
 <body>
-	<table class="w3-table w3-striped">
+	<table class="w3-table-all">
 		<tr>
 			<td id="tab1" class="tab">
-				<a href="javascript:disp_div('minfo','tab1')">회원정보</a>
+				<a href="javascript:disp_div('minfo','tab1')" class="title">회원정보</a>
 				<c:if test="${param.userid != 'admin' }">
 					<td id="tab2" class="tab">
-						<a href="javascript:disp_div('oinfo','tab2')">주문정보</a>
+						<a href="javascript:disp_div('oinfo','tab2')" class="title">주문정보</a>
 					</td>
 				</c:if>
 			</td>
 		</tr>
 	</table>
 	<div id="oinfo" class="info" style="display:none; width=100%;">
-		<table class="w3-table w3-striped">
+		<table class="w3-table-all">
 			<tr>
 				<th>주문번호</th>
 				<th>주문일자</th>
@@ -98,7 +101,7 @@
 		</table>
 	</div>
 	<div id="minfo" class="info">
-		<table class="w3-table w3-striped">
+		<table class="w3-table-all">
 			<tr>
 				<td>아이디</td>
 				<td>${user.userid }</td>
@@ -114,6 +117,10 @@
 			<tr>
 				<td>전화번호</td>
 				<td>${user.phoneno }</td>
+			</tr>
+			<tr>
+				<td>주소</td>
+				<td>${user.address }</td>
 			</tr>
 			<tr>
 				<td>이메일</td>

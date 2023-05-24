@@ -37,4 +37,17 @@ public class UserDao {
 		param.put("userid", userid);
 		return template.queryForObject("select * from useraccount where userid=:userid", param, mapper);
 	}
+
+	public void userUpdate(User user) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
+		String sql = "update useraccount set username=:username, phoneno=:phoneno, postcode=:postcode, address=:address, email=:email, birthday=:birthday  where userid=:userid";
+		template.update(sql, param);
+	}
+
+	public void userDelete(String userid) {
+		param.clear();
+		param.put("userid", userid);
+		String sql = "delete from useraccount where userid=:userid";
+		template.update(sql, param);
+	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,5 +115,13 @@ public class ShopService {
 			s.setItemList(saleItemList);
 		}				
 		return saleList;
+	}
+
+	public void userUpdate(User user) {
+		userDao.userUpdate(user);
+	}
+
+	public void userDelete(String userid) {
+		userDao.userDelete(userid);
 	}
 }

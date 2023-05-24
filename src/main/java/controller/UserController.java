@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import exception.LoginException;
 import logic.Sale;
 import logic.ShopService;
 import logic.User;
@@ -89,17 +91,79 @@ public class UserController {
 	
 	@RequestMapping("logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("loginUser");
+		session.invalidate();
 		return "redirect:login";
 	}
 	
 	@RequestMapping("mypage")
-	public ModelAndView mypage(String userid) {
+	public ModelAndView idCheckMypage(String userid, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		List<Sale> saleList = service.selectSaleList(userid);
 		User user = service.selectUserOne(userid);
 		mav.addObject("saleList", saleList);
 		mav.addObject("user",user);
 		return mav;
+	}
+	
+	@GetMapping({"update", "delete"})
+	public ModelAndView idCheckUpdateGet(String userid, HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		User user = service.selectUserOne(userid);
+		mav.addObject("user",user);
+		return mav;
+	}
+	
+	@PostMapping("update")
+	public ModelAndView idCheckUpdatePost(@Valid User user, BindingResult br, String userid, HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		User sessionUser = (User)session.getAttribute("loginUser");
+		if(br.hasErrors()) {
+			mav.getModel().putAll(br.getModel());
+			br.reject("error.input.check");
+			return mav;
+		} 
+		if(!user.getPassword().equals(sessionUser.getPassword())) {
+			mav.getModel().putAll(br.getModel());
+			br.reject("error.login.password");			
+			return mav;
+		}
+		try {
+			service.userUpdate(user);
+			if(!sessionUser.getUserid().equals("admin")) session.setAttribute("loginUser", user);
+			mav.addObject("user",user);		
+		} catch(DataIntegrityViolationException e) { 
+			e.printStackTrace();
+			br.reject("error.duplicate.user"); 
+			mav.getModel().putAll(br.getModel());
+			return mav;
+		}	
+		mav.setViewName("redirect:mypage?userid="+userid);
+		return mav;
+	}
+	
+	@PostMapping("delete")
+	public String idCheckDeletePost(String password, String userid, HttpSession session) { //throw new Exception 말고..해볼까..
+		User sessionUser = (User)session.getAttribute("loginUser");
+		if(userid.equals("admin")) {
+			throw new LoginException("관리자는 탈퇴가 불가합니다.", "mypage?userid="+userid);
+		}
+		if(!password.equals(sessionUser.getPassword())) {
+			throw new LoginException("비밀번호가 틀립니다.", "delete?userid="+userid);
+		}
+		try {
+			service.userDelete(userid);
+		} catch(DataIntegrityViolationException e) {
+			e.printStackTrace();
+			throw new LoginException("주문내역이 있는 회원은 탈퇴할 수 없습니다. 관리자에게 문의하세요.", "mypage?userid="+userid);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new LoginException("탈퇴시 오류 발생", "delete?userid="+userid);
+		}
+		if(sessionUser.getUserid().equals("admin")) {
+			return "redirect:../admin/list";
+		} else {
+			session.invalidate();
+			return "redirect:login";
+		}
 	}
 }
