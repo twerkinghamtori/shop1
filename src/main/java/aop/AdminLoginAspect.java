@@ -12,7 +12,7 @@ import logic.User;
 @Component
 @Aspect
 public class AdminLoginAspect {
-	@Before("execution(* controller.Admin*..*(..))")
+	@Before("execution(* controller.AdminController.*(..)) && args(..,session))")
 	public void adminCheck(HttpSession session) throws Throwable {
 		User sessionUser = (User)session.getAttribute("loginUser");
 		if(sessionUser == null) {

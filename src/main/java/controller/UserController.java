@@ -144,7 +144,7 @@ public class UserController {
 	}
 	
 	@PostMapping("delete")
-	public String idCheckDeletePost(BindingResult br, String password, String userid, HttpSession session) {
+	public String idCheckDeletePost(String password, String userid, HttpSession session) {
 		User sessionUser = (User)session.getAttribute("loginUser");
 		if(userid.equals("admin")) {
 			throw new LoginException("관리자는 탈퇴가 불가합니다.", "mypage?userid="+userid);

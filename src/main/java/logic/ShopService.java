@@ -130,4 +130,20 @@ public class ShopService {
 		User user = userDao.selectUserOne(userid);
 		return user;
 	}
+
+	public List<User> selectUserAll() {
+		return userDao.selectUserAll();
+	}
+
+//	public List<User> getUserList(String[] idchks) {
+//		List<User> list = new ArrayList<>();
+//		for(String s : idchks) {
+//			list.add(userDao.selectUserOne(s));
+//		}
+//		return list;
+//	}
+	
+	public List<User> getUserList(String[] idchks) {
+		return userDao.list(idchks);
+	}
 }
