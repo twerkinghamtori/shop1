@@ -146,4 +146,14 @@ public class ShopService {
 	public List<User> getUserList(String[] idchks) {
 		return userDao.list(idchks);
 	}
+
+	public String getSearch(User user) {
+		String result = "";
+		if(user.getUserid() == null) {
+			result = userDao.searchId(user.getEmail(), user.getPhoneno());
+		} else {
+			result = userDao.searchPw(user.getUserid(), user.getEmail(), user.getPhoneno());
+		}
+		return result;
+	}
 }

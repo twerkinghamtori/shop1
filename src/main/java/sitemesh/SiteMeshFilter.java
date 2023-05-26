@@ -9,6 +9,8 @@ import org.sitemesh.config.ConfigurableSiteMeshFilter;
 public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 	@Override
 	protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
-		builder.addDecoratorPath("/*", "/layout/mainlayout.jsp");
+		builder.addDecoratorPath("/*", "/layout/mainlayout.jsp")
+		.addExcludedPath("/user/idsearch*")
+		.addExcludedPath("/user/pwsearch*");
 	}
 }

@@ -76,6 +76,7 @@
   <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button"><i id="flip-horizontal" class="fa fa-sign-out"></i></a>
   <a href="${path}/user/mypage?userid=${loginUser.userid}" class="w3-bar-item w3-button">회원관리</a>
   <a href="${path}/item/list"  class="w3-bar-item w3-button">상품관리</a>
+  <a href="${path}/chat/chat"  class="w3-bar-item w3-button">채팅하기</a>
   <hr>
   <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn1">게시판 &nbsp;<i class="fa fa-caret-down"></i></a>
   <div id="demoAcc1" class="w3-bar-block w3-hide w3-padding-large w3-medium">

@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -187,5 +188,49 @@ public class UserController {
 				throw new LoginException("비밀번호 수정 오류 발생", "password");
 			}
 		}
+	}
+	
+	//{url}search => {url} 지정되지 않음.	*search 요청시 호출되는 메서드.
+	@PostMapping("{url}search")
+	public ModelAndView search(User user, BindingResult br, @PathVariable String url) { //@Valid User user => 다 걸리니까 쓸 수가 없음.
+		//@PathVariable : {url} 의 이름을 매개변수로 전달.
+		//		요청: idsearch : url => "id" // 요청: idsearch : url => "pw"
+		ModelAndView mav = new ModelAndView();
+		String code = "error.userid.search";
+		String title = "아이디";
+		if(url.equals("pw")) {
+			title = "비밀번호";
+			code="error.pw.search";
+			if(user.getUserid() == null || user.getUserid().trim().equals("")) {
+				//reject : 전역오류(global error) => jsp의 <spring:hasBindErrors ... 부분에 오류출력
+				//rejectValue : => jsp의 <form:errors path=... 부분에 오류 출력
+				br.rejectValue("userid", "error.required"); //error.code = error.required.userid				
+			}			
+		}
+		if(user.getEmail() == null || user.getEmail().trim().equals("")) {
+			br.rejectValue("email", "error.required");
+		}
+		if(user.getPhoneno() == null || user.getPhoneno().trim().equals("")) {
+			br.rejectValue("phoneno", "error.required");
+		}
+		if(br.hasErrors()) {
+			mav.getModel().putAll(br.getModel());
+			return mav;
+		}
+		//입력검증 통과. 
+		if(user.getUserid() != null && user.getUserid().trim().equals("")) user.setUserid(null);
+		String result = null;
+		try {
+			result = service.getSearch(user);
+		} catch(EmptyResultDataAccessException e) {
+			br.reject(code);
+			mav.getModel().putAll(br.getModel());
+			return mav;
+		}
+//		System.out.println(result);
+		mav.addObject("result",result);
+		mav.addObject("title", title);
+		mav.setViewName("search");
+		return mav;
 	}
 }

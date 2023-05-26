@@ -20,7 +20,7 @@ import logic.User;
 public class UserDao {
 	private NamedParameterJdbcTemplate template;
 	private Map<String, Object> param = new HashMap<String, Object>();
-	private RowMapper<User> mapper = new BeanPropertyRowMapper<User>(User.class);
+	private RowMapper<User> mapper = new BeanPropertyRowMapper<User>(User.class); //select 구문의 실행결과값을 map객체로 전달.
 	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -28,7 +28,8 @@ public class UserDao {
 	}
 	
 	public void userinsert(User user) {
-		SqlParameterSource param = new BeanPropertySqlParameterSource(user);
+		SqlParameterSource param = new BeanPropertySqlParameterSource(user); //user객체의 프로퍼티로 파라미터를 설정.
+		//:userid = user.getUserid() 
 		String sql = "insert into useraccount (userid, password, username, phoneno, postcode, address, email, birthday) values (:userid, :password, :username, :phoneno, :postcode, :address, :email, :birthday)";
 		template.update(sql, param);
 	}
@@ -72,6 +73,21 @@ public class UserDao {
 			sb.append(",");
 		}
 		return template.query("select * from useraccount where userid in ("+sb.toString()+")", param, mapper);
+	}
+
+	public String searchId(String email, String phoneno) {
+		param.clear();
+		param.put("email", email);
+		param.put("phoneno", phoneno);		
+		return template.queryForObject("select userid from useraccount where email=:email and phoneno=:phoneno", param, String.class);
+	}
+
+	public String searchPw(String userid, String email, String phoneno) {
+		param.clear();
+		param.put("userid", userid);
+		param.put("email", email);
+		param.put("phoneno", phoneno);		
+		return template.queryForObject("select password from useraccount where userid=:userid and email=:email and phoneno=:phoneno", param, String.class);
 	}
 
 }
