@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import dao.BoardDao;
 import dao.ItemDao;
 import dao.UserDao;
 import dao.SaleDao;
@@ -29,6 +30,9 @@ public class ShopService {
 	
 	@Autowired
 	private SaleItemDao saleItemDao;
+	
+	@Autowired
+	private BoardDao boardDao;
 	
 	public List<Item> itemList() {
 		return itemDao.list();
@@ -155,5 +159,34 @@ public class ShopService {
 			result = userDao.searchPw(user.getUserid(), user.getEmail(), user.getPhoneno());
 		}
 		return result;
+	}
+
+	public void boardWrite(Board board, HttpServletRequest request) {
+		int maxnum = boardDao.maxnum();
+		board.setNum(++maxnum);
+		board.setGrp(maxnum);
+		
+		if(board.getFile1() != null && !board.getFile1().isEmpty()) {
+			String path = request.getServletContext().getRealPath("/") + "board/file/"; 
+			this.uploadFileCreate(board.getFile1(), path);
+			board.setFileurl(board.getFile1().getOriginalFilename()); 
+		}		
+		boardDao.insert(board);
+	}
+
+	public int boardCount(String boardid, String searchType, String searchContent) {
+		return boardDao.count(boardid, searchType, searchContent);
+	}
+
+	public List<Board> boardList(Integer pageNum, int limit, String boardid, String searchType, String searchContent) {
+		return boardDao.list(pageNum, limit, boardid, searchType, searchContent);
+	}
+
+	public Board getBoard(int num) {
+		return boardDao.selectOne(num);
+	}
+
+	public void addReadCnt(int num) {
+		boardDao.addReadCnt(num);
 	}
 }
