@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import dao.BoardDao;
@@ -188,5 +189,15 @@ public class ShopService {
 
 	public void addReadCnt(int num) {
 		boardDao.addReadCnt(num);
+	}
+	
+	@Transactional //보통 service에서 @Transactional 처리. 업무를 원자화(All or Nothing).
+	public void boardReply(Board b) {
+		boardDao.grpStepAdd(b); //이미 등록된 grpstep값 1씩 증가
+		int maxnum = boardDao.maxnum();
+		b.setNum(++maxnum);
+		b.setGrplevel(b.getGrplevel() + 1);
+		b.setGrpstep(b.getGrpstep()+1);		
+		boardDao.insert(b);		
 	}
 }

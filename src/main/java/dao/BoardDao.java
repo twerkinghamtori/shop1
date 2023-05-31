@@ -83,4 +83,19 @@ public class BoardDao {
 		String sql = "update board set readcnt=readcnt+1 where num=:num";
 		template.update(sql, param);		
 	}
+
+	public void insertReply(Board b) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(b);
+		String sql = "insert into board values (:num, :writer, :pass, :title, :content, :fileurl, :boardid, now(), 0, :grp, :grplevel, :grpstep)";
+		template.update(sql, param);
+	}
+
+	public void grpStepAdd(Board b) {
+		param.clear();
+		param.put("grp", b.getGrp());
+		param.put("grpstep", b.getGrpstep());
+		String sql = "update board set grpstep=grpstep+1 where grp=:grp and grpstep>:grpstep";
+		template.update(sql, param);
+	}
+
 }
