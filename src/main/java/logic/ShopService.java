@@ -56,7 +56,7 @@ public class ShopService {
 	}
 	
 	//파일 업로드
-	private void uploadFileCreate(MultipartFile file, String path) {
+	public void uploadFileCreate(MultipartFile file, String path) {
 		//file : 파일의 내용, path : 업로드할 폴더
 		String orgFile = file.getOriginalFilename(); //파일 이름
 		File f = new File(path);
@@ -199,5 +199,9 @@ public class ShopService {
 		b.setGrplevel(b.getGrplevel() + 1);
 		b.setGrpstep(b.getGrpstep()+1);		
 		boardDao.insert(b);		
+	}
+
+	public void boardDelete(Integer num) {
+		boardDao.delete(num);
 	}
 }

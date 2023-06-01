@@ -98,4 +98,11 @@ public class BoardDao {
 		template.update(sql, param);
 	}
 
+	public void delete(Integer num) {
+		param.clear();
+		param.put("num", num);
+		String sql = "delete from board where num=:num";
+		template.update(sql, param);
+	}
+
 }

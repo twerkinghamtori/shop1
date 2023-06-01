@@ -16,3 +16,5 @@ error.required.writer=작성자를 입력해주세요.
 error.required.pass=비밀번호를 입력해주세요.
 error.required.title=제목을 입력해주세요.
 error.required.content=내용을 입력해주세요.
+
+error.board.fail=게시판 삭제에 실패했습니다.

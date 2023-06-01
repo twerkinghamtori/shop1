@@ -12,11 +12,13 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import exception.LoginException;
@@ -135,7 +137,7 @@ public class BoardController {
 		return mav;
 	}
 	
-	@GetMapping("reply")
+	@GetMapping({"reply","update","delete"})
 	public ModelAndView replyView(Integer num, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		Board b = null;
@@ -190,5 +192,46 @@ public class BoardController {
 		}		
 		return mav;
 				
+	}
+	
+	@PostMapping("delete")
+	public ModelAndView delete(Board board, BindingResult br) {
+		ModelAndView mav = new ModelAndView();
+		if(board.getPass()==null || board.getPass().equals("")) {
+			br.reject("error.required.pass");
+			return mav;
+		}
+		Board dbboard = service.getBoard(board.getNum());
+		String dbPass = dbboard.getPass();
+		if(!dbPass.equals(board.getPass())) {
+			br.reject("error.login.password");
+			return mav;
+		} else {
+			try {
+				service.boardDelete(board.getNum());
+				mav.setViewName("redirect:list?boardid="+ dbboard.getBoardid());
+			} catch(Exception e) {
+				e.printStackTrace();
+//				br.reject("error.board.fail");
+				throw new LoginException("게시글 삭제 시 오류 발생", "delete?num="+board.getNum());				
+			}			
+		}
+		return mav;
+	}
+		
+	@RequestMapping("imgupload")
+	public String imgupload(MultipartFile upload, String CKEditorFuncNum, HttpServletRequest request, Model model) { 
+		/*
+		 upload : CKEditor 모듈에서 업로드되는 이미지의 이름. 업로드되는 이미지파일의 내용. 이미지값
+		 CKEditorFuncNum : CKEditor 모듈에서 파라미터로 전달되는 값. 리턴해야하는 값
+		 Model : ModelAndView 를 분리. view에 전달할 데이터 정보를 저장할 객체
+		 */
+		String path = request.getServletContext().getRealPath("/") + "board/imgfile/";
+		service.uploadFileCreate(upload, path); //upload(파일의내용), path(업로드할 폴더)
+		//request.getContextPath() : 웹어플리케이션 서버 경로. 프로젝트명(웹어플리케이션서버이름) = shop1/
+		//localhost:8080/shop1/board/imgfile/hamtori.jpg
+		String fileName = request.getContextPath() + "/board/imgfile/" + upload.getOriginalFilename();
+		model.addAttribute("fileName", fileName);
+		return "ckedit"; //view이름
 	}
 }

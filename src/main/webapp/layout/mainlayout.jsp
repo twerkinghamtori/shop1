@@ -127,6 +127,24 @@
     <h3><i class="fa fa-envelope"></i> rritjy@naver.com | zxc2289@naver.com</h3>
     <h3><i class="fa fa-instagram"></i> @jeongjingyu63 | @sub__b.in</h3>
   </div>
+  <hr>
+    <div>
+    	<span id="si">
+    		<select name="si" onchange="getText('si')">
+    			<option value="">시도를 선택하세요</option>
+    		</select>
+    	</span>
+    	<span id="gu">
+    		<select name="gu" onchange="getText('gu')">
+    			<option value="">구군을 선택하세요</option>
+    		</select>
+    	</span>
+    	<span id="dong">
+    		<select name="dong" onchange="getText('dong')">
+    			<option value="">동리를 선택하세요</option>
+    		</select>
+    	</span>
+    </div>
 </footer>
 
 <!-- End page content -->
@@ -160,6 +178,78 @@
     document.documentElement.scrollTop = 0;
   }
 </script>
-
+<script type="text/javascript">
+	$(function() {
+		getSido()
+	})
+	function getSido() { //서버에서 리스트객체를 배열로 직접 전달 받음
+		$.ajax({
+			url : "${path}/ajax/select",
+			success : function(arr) {
+				console.log(arr)
+				$.each(arr, function(i,item) {
+					$("select[name=si]").append(function() {
+						return "<option>" + item + "</option>"
+					})
+				})
+			},error : function(e) {
+				alert(e.status)
+			}
+		})
+	}
+	function getSido2() { //서버에서 문자열로 전달 받기
+		$.ajax({
+			url : "${path}/ajax/select2",
+			success : function(data) {
+				console.log(data)
+				let arr = data.substring(data.indexOf('[')+1, data.indexOf(']')).split(",")
+				$.each(arr, function(i,item) {
+					$("select[name=si]").append(function() {
+						return "<option>" + item + "</option>"
+					})
+				})
+			},error : function(e) {
+				alert(e.status)
+			}
+		})
+	}
+	function getText(name) { //name= si || gu
+		let city = $("select[name='si']").val()
+		let gun = $("select[name='gu']").val()
+		let disname =''
+		let toptext = '구/군을 선택하세요'
+		let params=''
+		if(name=='si') {
+			params = "si=" + city.trim()
+			disname = "gu"
+		} else if(name=='gu') {
+			params = "si=" + city.trim() + "&gu=" + gun.trim()
+			disname = "dong"
+			toptext = '동/리를 선택하세요'
+		} else {
+			return;
+		}
+		$.ajax({
+			url : "${path}/ajax/select",
+			type : "POST",
+			data : params,
+			success : function(arr) {
+				console.log(arr)
+				$("select[name=" + disname + "] option").remove()
+				$("select[name=" + disname + "]").append(function(){
+					return "<option>" + toptext + "</option>"
+				})
+				$.each(arr, function(i,item){
+					$("select[name=" + disname + "]").append(function(){
+						return "<option>" + item + "</option>"
+					})
+				})
+			},
+			error : function(e) {
+				alert(e.status)
+			}
+		})
+	}
+</script>
 </body>
 </html>
