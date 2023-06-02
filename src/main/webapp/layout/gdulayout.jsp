@@ -13,6 +13,17 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" >
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.ckeditor.com/4.5.7/standard/ckeditor.js"></script>
+<link rel="shortcut icon" href="${path}/images/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
 <script type="text/javascript" src= 
 "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script>
@@ -76,6 +87,9 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <a href="${path}/board/list?boardid=3" 
     class="w3-bar-item w3-button w3-padding <c:if test='${url=="board" && boardid=="3" }'>w3-blue </c:if>">
     <i class="fa fa-eye fa-fw"></i>&nbsp; QnA</a>
+  </div>
+  <div class="w3-container">
+  	<div id="exchange"></div>
   </div>
 </nav>
 
@@ -189,6 +203,109 @@ function w3_close() {
   overlayBg.style.display = "none";
 }
 </script>
-
+<script type="text/javascript">
+	$(function() {
+		getSido();
+//		exchangeRate();
+		exchangeRate2();
+	})
+	function getSido() { //서버에서 리스트객체를 배열로 직접 전달 받음
+		$.ajax({
+			url : "${path}/ajax/select",
+			success : function(arr) {
+				console.log(arr)
+				$.each(arr, function(i,item) {
+					$("select[name=si]").append(function() {
+						return "<option>" + item + "</option>"
+					})
+				})
+			},error : function(e) {
+				alert("도시정보" + e.status)
+			}
+		})
+	}
+	function getSido2() { //서버에서 문자열로 전달 받기
+		$.ajax({
+			url : "${path}/ajax/select2",
+			success : function(data) {
+				console.log(data)
+				let arr = data.substring(data.indexOf('[')+1, data.indexOf(']')).split(",")
+				$.each(arr, function(i,item) {
+					$("select[name=si]").append(function() {
+						return "<option>" + item + "</option>"
+					})
+				})
+			},error : function(e) {
+				alert(e.status)
+			}
+		})
+	}
+	function getText(name) { //name= si || gu
+		let city = $("select[name='si']").val()
+		let gun = $("select[name='gu']").val()
+		let disname =''
+		let toptext = '구/군을 선택하세요'
+		let params=''
+		if(name=='si') {
+			params = "si=" + city.trim()
+			disname = "gu"
+		} else if(name=='gu') {
+			params = "si=" + city.trim() + "&gu=" + gun.trim()
+			disname = "dong"
+			toptext = '동/리를 선택하세요'
+		} else {
+			return;
+		}
+		$.ajax({
+			url : "${path}/ajax/select",
+			type : "POST",
+			data : params,
+			success : function(arr) {
+				console.log(arr)
+				$("select[name=" + disname + "] option").remove() //출력 select 태그의 option 제거. append에 추가 방지
+				$("select[name=" + disname + "]").append(function(){
+					return "<option>" + toptext + "</option>"
+				})
+				$.each(arr, function(i,item){
+					$("select[name=" + disname + "]").append(function(){
+						return "<option>" + item + "</option>"
+					})
+				})
+			},
+			error : function(e) {
+				alert(e.status)
+			}
+		})
+	}
+	function exchangeRate() {
+		$.ajax("${path}/ajax/exchange", {
+			success : function(data) {
+				console.log(data)
+				$("#exchange").html(data)
+			},
+			error : function(e) {
+				alert("환율조회"+e.status)
+			}
+		})
+	}
+	function exchangeRate2() { //map 객체로 데이터 수신
+		$.ajax("${path}/ajax/exchange2", {
+			success : function(data) {
+				console.log(data) //json타입으로 전송됨
+				let text="<h4 class='w3-center'>수출입은행<br>" + data.exdate + "</h4>";
+				text+="<table class='table table-hover table-bordered'>";
+				text+="<tr class='table-dark'><th>통화</th><th>기준율</th><th>받으실때</th><th>보내실때</th></tr>";
+				$.each(data.trlist, function(i, tds) {
+					text += "<tr><td>" + tds[0] + "<br>" + tds[1] + "</td><td>" + tds[4] + "</td>";
+					text += "<td>" + tds[2] + "</td><td>" + tds[3] + "</td></tr>"
+				})
+				$("#exchange").html(text)
+			},
+			error : function(e) {
+				alert("환율조회"+e.status)
+			}
+		})
+	}
+</script>
 </body>
 </html>

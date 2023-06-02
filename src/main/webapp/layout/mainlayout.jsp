@@ -11,7 +11,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" >
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript" src="http://cdn.ckeditor.com/4.5.7/standard/ckeditor.js"></script>
+<script type="text/javascript" src="http://cdn.ckeditor.com/4.5.7/full/ckeditor.js"></script>
 <link rel="shortcut icon" href="${path}/images/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
@@ -66,6 +66,10 @@
   padding: 15px; 
   border-radius: 10px; 
 }
+#exchange {	
+	font-size:20px;
+	font-family: 'Dongle', sans-serif;
+}
 </style>
 <sitemesh:write property='head'/>
 </head>
@@ -84,6 +88,9 @@
 	  <a href="${path}/board/list?boardid=2"  class="w3-bar-item w3-button">자유게시판</a>
 	  <a href="${path}/board/list?boardid=3"  class="w3-bar-item w3-button">QnA</a>
 	</div>
+  <div class="container">
+  	<div id="exchange"></div>
+  </div>
 </nav>
 
 <!-- Top menu -->
@@ -162,7 +169,7 @@
     $('#myBtn1, #demoAcc1').mouseleave(function() {
       $('#demoAcc1').removeClass('w3-show');
     });
-  });
+  })  
   window.onscroll = function() {scrollFunction()};
 
   function scrollFunction() {
@@ -180,7 +187,9 @@
 </script>
 <script type="text/javascript">
 	$(function() {
-		getSido()
+		getSido();
+//		exchangeRate();
+		exchangeRate2();
 	})
 	function getSido() { //서버에서 리스트객체를 배열로 직접 전달 받음
 		$.ajax({
@@ -193,7 +202,7 @@
 					})
 				})
 			},error : function(e) {
-				alert(e.status)
+				alert("도시정보" + e.status)
 			}
 		})
 	}
@@ -235,7 +244,7 @@
 			data : params,
 			success : function(arr) {
 				console.log(arr)
-				$("select[name=" + disname + "] option").remove()
+				$("select[name=" + disname + "] option").remove() //출력 select 태그의 option 제거. append에 추가 방지
 				$("select[name=" + disname + "]").append(function(){
 					return "<option>" + toptext + "</option>"
 				})
@@ -247,6 +256,35 @@
 			},
 			error : function(e) {
 				alert(e.status)
+			}
+		})
+	}
+	function exchangeRate() {
+		$.ajax("${path}/ajax/exchange", {
+			success : function(data) {
+				console.log(data)
+				$("#exchange").html(data)
+			},
+			error : function(e) {
+				alert("환율조회"+e.status)
+			}
+		})
+	}
+	function exchangeRate2() { //map 객체로 데이터 수신
+		$.ajax("${path}/ajax/exchange2", {
+			success : function(data) {
+				console.log(data) //json타입으로 전송됨
+				let text="<h4 class='w3-center'>수출입은행<br>" + data.exdate + "</h4>";
+				text+="<table class='table table-hover table-bordered'>";
+				text+="<tr class='table-dark'><th>통화</th><th>기준율</th><th>받으실때</th><th>보내실때</th></tr>";
+				$.each(data.trlist, function(i, tds) {
+					text += "<tr><td>" + tds[0] + "<br>" + tds[1] + "</td><td>" + tds[4] + "</td>";
+					text += "<td>" + tds[2] + "</td><td>" + tds[3] + "</td></tr>"
+				})
+				$("#exchange").html(text)
+			},
+			error : function(e) {
+				alert("환율조회"+e.status)
 			}
 		})
 	}
